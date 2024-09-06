@@ -1,16 +1,25 @@
 module Api
   module V1
     class EarthquakesController < ApplicationController
-      before_action :doorkeeper_authorize! # Fixed this line
+      before_action :doorkeeper_authorize! # Require user authentication via OAuth
       before_action :set_earthquake, only: [:show, :update, :destroy]
 
       # GET /earthquakes
       def index
-        earthquakes = Earthquake.page(params[:page]).per(20).as_json
-        Rails.cache.write("earthquakes_page_#{params[:page]}", earthquakes, expires_in: 12.hours)
-        render json: earthquakes
+        earthquakes = Rails.cache.fetch("earthquakes_page_#{params[:page]}", expires_in: 12.hours) do
+          Earthquake.page(params[:page]).per(20).as_json
+        end
+
+        meta = {
+          current_page: params[:page] || 1,
+          total_pages: Earthquake.page(params[:page]).per(20).total_pages,
+          total_count: Earthquake.count
+        }
+
+        render json: { earthquakes: earthquakes, meta: meta }
       end
-      
+
+      # GET /earthquakes/:id
       def show
         render json: @earthquake
       end
@@ -42,10 +51,14 @@ module Api
 
       private
 
+      # Find the earthquake by ID and handle record not found
       def set_earthquake
         @earthquake = Earthquake.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: 'Earthquake not found' }, status: :not_found
       end
 
+      # Strong parameters
       def earthquake_params
         params.require(:earthquake).permit(:date, :latitude, :longitude, :depth, :location, :magnitude)
       end

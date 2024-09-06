@@ -13,10 +13,10 @@ class SwaggerController < ActionController::Base
       key :url, '{scheme}://{host}/{basePath}'
       key :description, 'API server'
       variable :scheme do
-        key :default, 'https'
+        key :default, 'http' # Adjust to 'https' for production
       end
       variable :host do
-        key :default, 'your-api-url.com'
+        key :default, 'localhost:3000' # Change this to your production host
       end
       variable :basePath do
         key :default, 'api/v1'
@@ -104,9 +104,24 @@ class SwaggerController < ActionController::Base
         key :description, 'Earthquake response'
         content 'application/json' do
           schema do
-            key :type, :array
-            items do
-              key :'$ref', :Earthquake
+            key :type, :object
+            property :earthquakes do
+              key :type, :array
+              items do
+                key :'$ref', :Earthquake
+              end
+            end
+            property :meta do
+              key :type, :object
+              property :current_page do
+                key :type, :integer
+              end
+              property :total_pages do
+                key :type, :integer
+              end
+              property :total_count do
+                key :type, :integer
+              end
             end
           end
         end
