@@ -1,27 +1,30 @@
 class SwaggerController < ActionController::Base
-    include Swagger::Blocks
-  
-    swagger_root do
-      key :swagger, '2.0'
-      info do
-        key :version, '1.0.0'
-        key :title, 'Earthquake API'
+  include Swagger::Blocks
+
+  swagger_root do
+    key :openapi, '3.0.0'  # Changed from 'swagger' to 'openapi' and version to 3.0.0
+    info do
+      key :version, '1.0.0'
+      key :title, 'Earthquake API'
+      key :description, 'API documentation for the Earthquake service.'
+    end
+
+    server do
+      key :url, '{scheme}://{host}/{basePath}'
+      key :description, 'API server'
+      variable :scheme do
+        key :default, 'https'
       end
-      server do
-        key :url, '{scheme}://{host}/{basePath}'
-        key :description, 'API server'
-        variable :scheme do
-          key :default, 'https'
-        end
-        variable :host do
-          key :default, 'your-api-url.com'
-        end
-        variable :basePath do
-          key :default, 'api/v1'
-        end
+      variable :host do
+        key :default, 'your-api-url.com'
       end
-  
-      components do
+      variable :basePath do
+        key :default, 'api/v1'
+      end
+    end
+
+    components do
+      schemas do
         schema :Earthquake do
           key :required, [:date, :latitude, :longitude, :depth, :location, :magnitude]
           property :id do
@@ -51,7 +54,7 @@ class SwaggerController < ActionController::Base
             key :format, :float
           end
         end
-  
+
         schema :User do
           key :required, [:email, :password]
           property :id do
@@ -65,7 +68,7 @@ class SwaggerController < ActionController::Base
             key :type, :string
           end
         end
-  
+
         schema :Token do
           property :access_token do
             key :type, :string
@@ -80,6 +83,7 @@ class SwaggerController < ActionController::Base
         end
       end
     end
+  end
   
     swagger_path '/earthquakes' do
       operation :get do

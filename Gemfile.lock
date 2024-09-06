@@ -291,7 +291,7 @@ DEPENDENCIES
   redis
   redis-rails
   sass-rails (~> 6.0)
-  swagger-blocks
+  swagger-blocks (~> 3.0)
   tzinfo-data
 
 RUBY VERSION
