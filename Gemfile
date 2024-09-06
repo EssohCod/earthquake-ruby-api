@@ -6,12 +6,7 @@ ruby "3.3.4"
 gem "rails", "~> 7.1.4"
 
 # Use sqlite3 as the database for Active Record
-#gem "sqlite3", ">= 1.4"
-gem 'pg'
-
-gem 'net-pop', github: 'ruby/net-pop'
-
-gem 'net-protocol'
+gem "sqlite3", ">= 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
@@ -57,14 +52,10 @@ gem 'doorkeeper'
 gem 'kaminari'
 gem 'redis'
 gem 'graphql'
-gem 'swagger-blocks', '~> 3.0'
+gem 'swagger-blocks'
 gem 'grape-swagger-rails'
 gem 'redis-rails'
 gem 'faker', '~> 2.19'
 
 
 
-
-gem "sass-rails", "~> 6.0"
-
-gem "jsbundling-rails", "~> 1.3"
