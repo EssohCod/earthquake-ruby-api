@@ -2,7 +2,7 @@ class SwaggerController < ActionController::Base
   include Swagger::Blocks
 
   swagger_root do
-    key :openapi, '3.0.0'  # Changed from 'swagger' to 'openapi' and version to 3.0.0
+    key :openapi, '3.0.0'
     info do
       key :version, '1.0.0'
       key :title, 'Earthquake API'
@@ -84,22 +84,25 @@ class SwaggerController < ActionController::Base
       end
     end
   end
-  
-    swagger_path '/earthquakes' do
-      operation :get do
-        key :summary, 'Get all earthquakes (paginated)'
-        key :description, 'Retrieves a list of earthquakes. Can paginate results.'
-        key :operationId, 'getEarthquakes'
-        key :produces, ['application/json']
-        parameter do
-          key :name, :page
-          key :in, :query
-          key :description, 'Page number for pagination'
-          key :required, false
+
+  swagger_path '/earthquakes' do
+    operation :get do
+      key :summary, 'Get all earthquakes (paginated)'
+      key :description, 'Retrieves a list of earthquakes. Supports pagination.'
+      key :operationId, 'getEarthquakes'
+      key :produces, ['application/json']
+      parameter do
+        key :name, :page
+        key :in, :query
+        key :description, 'Page number for pagination'
+        key :required, false
+        schema do
           key :type, :integer
         end
-        response 200 do
-          key :description, 'Earthquake response'
+      end
+      response 200 do
+        key :description, 'Earthquake response'
+        content 'application/json' do
           schema do
             key :type, :array
             items do
@@ -108,97 +111,107 @@ class SwaggerController < ActionController::Base
           end
         end
       end
-  
-      operation :post do
-        key :summary, 'Create a new earthquake'
-        key :description, 'Creates a new earthquake record'
-        key :operationId, 'createEarthquake'
-        key :produces, ['application/json']
-        key :consumes, ['application/json']
-        parameter do
-          key :name, :earthquake
-          key :in, :body
-          key :description, 'Earthquake object to be created'
-          key :required, true
+    end
+
+    operation :post do
+      key :summary, 'Create a new earthquake'
+      key :description, 'Creates a new earthquake record'
+      key :operationId, 'createEarthquake'
+      key :produces, ['application/json']
+      key :consumes, ['application/json']
+      requestBody do
+        required true
+        content 'application/json' do
           schema do
             key :'$ref', :Earthquake
           end
         end
-        response 201 do
-          key :description, 'Earthquake created successfully'
+      end
+      response 201 do
+        key :description, 'Earthquake created successfully'
+        content 'application/json' do
           schema do
             key :'$ref', :Earthquake
           end
         end
       end
     end
-  
-    swagger_path '/earthquakes/{id}' do
-      operation :get do
-        key :summary, 'Find an earthquake by ID'
-        key :description, 'Returns a single earthquake'
-        key :operationId, 'findEarthquakeById'
-        key :produces, ['application/json']
-        parameter do
-          key :name, :id
-          key :in, :path
-          key :description, 'ID of earthquake to fetch'
-          key :required, true
+  end
+
+  swagger_path '/earthquakes/{id}' do
+    operation :get do
+      key :summary, 'Find an earthquake by ID'
+      key :description, 'Returns a single earthquake'
+      key :operationId, 'findEarthquakeById'
+      key :produces, ['application/json']
+      parameter do
+        key :name, :id
+        key :in, :path
+        key :description, 'ID of earthquake to fetch'
+        key :required, true
+        schema do
           key :type, :integer
-        end
-        response 200 do
-          key :description, 'Earthquake details'
-          schema do
-            key :'$ref', :Earthquake
-          end
         end
       end
-  
-      operation :put do
-        key :summary, 'Update an earthquake'
-        key :description, 'Updates the details of an existing earthquake'
-        key :operationId, 'updateEarthquake'
-        key :produces, ['application/json']
-        key :consumes, ['application/json']
-        parameter do
-          key :name, :id
-          key :in, :path
-          key :description, 'ID of earthquake to update'
-          key :required, true
-          key :type, :integer
-        end
-        parameter do
-          key :name, :earthquake
-          key :in, :body
-          key :description, 'Updated earthquake object'
-          key :required, true
+      response 200 do
+        key :description, 'Earthquake details'
+        content 'application/json' do
           schema do
             key :'$ref', :Earthquake
           end
-        end
-        response 200 do
-          key :description, 'Earthquake updated successfully'
-          schema do
-            key :'$ref', :Earthquake
-          end
-        end
-      end
-  
-      operation :delete do
-        key :summary, 'Delete an earthquake'
-        key :description, 'Deletes an earthquake by ID'
-        key :operationId, 'deleteEarthquake'
-        parameter do
-          key :name, :id
-          key :in, :path
-          key :description, 'ID of earthquake to delete'
-          key :required, true
-          key :type, :integer
-        end
-        response 204 do
-          key :description, 'Earthquake deleted successfully'
         end
       end
     end
+
+    operation :put do
+      key :summary, 'Update an earthquake'
+      key :description, 'Updates the details of an existing earthquake'
+      key :operationId, 'updateEarthquake'
+      key :produces, ['application/json']
+      key :consumes, ['application/json']
+      parameter do
+        key :name, :id
+        key :in, :path
+        key :description, 'ID of earthquake to update'
+        key :required, true
+        schema do
+          key :type, :integer
+        end
+      end
+      requestBody do
+        required true
+        content 'application/json' do
+          schema do
+            key :'$ref', :Earthquake
+          end
+        end
+      end
+      response 200 do
+        key :description, 'Earthquake updated successfully'
+        content 'application/json' do
+          schema do
+            key :'$ref', :Earthquake
+          end
+        end
+      end
+    end
+
+    operation :delete do
+      key :summary, 'Delete an earthquake'
+      key :description, 'Deletes an earthquake by ID'
+      key :operationId, 'deleteEarthquake'
+      parameter do
+        key :name, :id
+        key :in, :path
+        key :description, 'ID of earthquake to delete'
+        key :required, true
+        schema do
+          key :type, :integer
+        end
+      end
+      response 204 do
+        key :description, 'Earthquake deleted successfully'
+      end
+    end
+  end
 end
-  
