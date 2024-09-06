@@ -64,3 +64,7 @@ gem 'faker', '~> 2.19'
 
 
 
+
+gem "sass-rails", "~> 6.0"
+
+gem "jsbundling-rails", "~> 1.3"
