@@ -6,13 +6,7 @@ ruby "3.3.4"
 gem "rails", "~> 7.1.4"
 
 # Use sqlite3 as the database for Active Record
-# gem "sqlite3", ">= 1.4"
-
-gem 'pg'
-
-gem 'net-pop', github: 'ruby/net-pop'
-
-gem 'net-protocol'
+gem "sqlite3", ">= 1.4"
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
@@ -65,5 +59,3 @@ gem 'faker', '~> 2.19'
 
 
 
-
-gem "sprockets-rails", "~> 3.5"
